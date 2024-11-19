@@ -1,5 +1,2 @@
-.venv/
-localstack/
-postgres-data/
 redis-data/
 mongo-data/

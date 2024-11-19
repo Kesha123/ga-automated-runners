@@ -1,10 +1,8 @@
-enum WorkflowJobStatus {
-  queued = 'queued',
-  in_progress = 'in_progress',
-  completed = 'completed',
-  waiting = 'waiting',
-  requested = 'requested',
-  pending = 'pending',
+enum Action {
+  Queued = 'queued',
+  In_progress = 'in_progress',
+  Completed = 'completed',
+  Waiting = 'waiting',
 }
 
-export default WorkflowJobStatus;
+export default Action;

@@ -1,22 +1,38 @@
 import { AutoMap } from '@automapper/classes';
-import RunnerOS from './runner-os.enum';
 import RunnerStatus from './runner-status.enum';
+import RunnerProvider from './runner-provider.enum';
 
-class Runner {
-  @AutoMap()
-  id: string;
-
+export class Runner {
   @AutoMap()
   status: RunnerStatus;
 
   @AutoMap()
-  createdAt: Date;
-
-  @AutoMap()
-  os: RunnerOS;
-
-  @AutoMap()
   labels: string[];
-}
 
-export default Runner;
+  @AutoMap()
+  current_job_id: number;
+
+  @AutoMap()
+  next_job_id: number;
+
+  @AutoMap()
+  created_at: string;
+
+  @AutoMap()
+  updated_at: string;
+
+  @AutoMap()
+  shutdown_at: string;
+
+  @AutoMap()
+  provider: RunnerProvider;
+
+  @AutoMap()
+  urn: string | null;
+
+  @AutoMap()
+  docker_id: string | null;
+
+  @AutoMap()
+  vagrant_id: string | null;
+}

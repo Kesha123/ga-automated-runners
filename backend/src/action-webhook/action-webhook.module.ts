@@ -10,7 +10,11 @@ import { WorkflowJobConsumer } from './workflow-job.consumer';
 
 @Module({
   controllers: [ActionWebhookController],
-  providers: [ActionWebhookService, ActionWebHookMapperProfile, WorkflowJobConsumer],
+  providers: [
+    ActionWebhookService,
+    ActionWebHookMapperProfile,
+    WorkflowJobConsumer,
+  ],
   imports: [
     DataModule,
     AutomapperModule.forRoot({

@@ -1,7 +1,7 @@
-import { Processor, WorkerHost } from "@nestjs/bullmq";
-import { Job } from "bullmq";
-import { InvalidEnvironmentError } from "src/errors/invalid-environment.error";
-import { ActionWebhookService } from "./action-webhook.service";
+import { Processor, WorkerHost } from '@nestjs/bullmq';
+import { Job } from 'bullmq';
+import { InvalidEnvironmentError } from 'src/errors/invalid-environment.error';
+import { ActionWebhookService } from './action-webhook.service';
 
 @Processor('workflow-job')
 export class WorkflowJobConsumer extends WorkerHost {
@@ -12,7 +12,7 @@ export class WorkflowJobConsumer extends WorkerHost {
   process(job: Job, token?: string): Promise<void> {
     switch (job.name) {
       case 'runner-control':
-        this.actionWebhookService.handleJob(job)
+        this.actionWebhookService.handleJob(job);
         return;
       default:
         throw new InvalidEnvironmentError();

@@ -1,5 +1,5 @@
 import { AutoMap } from '@automapper/classes';
-import RunnerOS from 'src/models/runner-os.enum';
+import RunnerOS from 'src/models/runner-provider.enum';
 import RunnerStatus from 'src/models/runner-status.enum';
 import {
   Entity,
@@ -7,13 +7,17 @@ import {
   ObjectId,
   Column,
   CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 @Entity('github_runner')
 export class RunnerEntity {
   @AutoMap()
   @ObjectIdColumn()
-  id: ObjectId;
+  _id: ObjectId;
+
+  @AutoMap()
+  id: number;
 
   @AutoMap()
   @Column({
@@ -23,17 +27,45 @@ export class RunnerEntity {
   status: RunnerStatus;
 
   @AutoMap()
+  @Column('array')
+  labels: string[];
+
+  @AutoMap()
+  @Column()
+  current_job_id: number;
+
+  @AutoMap()
+  @Column()
+  next_job_id: number;
+
+  @AutoMap()
   @CreateDateColumn()
   createdAt: Date;
+
+  @AutoMap()
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  @AutoMap()
+  @Column({ nullable: true })
+  shutdown_at: Date;
 
   @AutoMap()
   @Column({
     type: 'enum',
     enum: RunnerOS,
   })
-  os: string;
+  provider: RunnerOS;
 
   @AutoMap()
-  @Column('array')
-  labels: string[];
+  @Column({ nullable: true })
+  urn: string;
+
+  @AutoMap()
+  @Column({ nullable: true })
+  docker_id: string;
+
+  @AutoMap()
+  @Column({ nullable: true })
+  vagrant_id: string;
 }

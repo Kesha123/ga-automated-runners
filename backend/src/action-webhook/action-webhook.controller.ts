@@ -10,6 +10,6 @@ export class ActionWebhookController {
   async workflowJobHandler(
     @Body() workflowJobPayloadDto: WorkflowJobPayloadDto,
   ) {
-    this.actionWebhookService.addWorkflowJobToQueue(workflowJobPayloadDto);
+    this.actionWebhookService.queueWorkflowJobAction(workflowJobPayloadDto);
   }
 }
