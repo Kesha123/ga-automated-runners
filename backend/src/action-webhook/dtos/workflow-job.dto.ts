@@ -7,8 +7,8 @@ import {
   IsOptional,
 } from 'class-validator';
 import { Type, Transform } from 'class-transformer';
-import WorkflowJobConclusion from 'src/models/workflow-job-conclusion.enum';
-import WorkflowJobStatus from 'src/models/workflow-job-status.enum';
+import WorkflowJobConclusion from 'src/data/models/workflow-job-conclusion.enum';
+import WorkflowJobStatus from 'src/data/models/workflow-job-status.enum';
 import { StepDto } from './step.dto';
 import { AutoMap } from '@automapper/classes';
 

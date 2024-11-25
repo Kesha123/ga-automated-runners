@@ -1,6 +1,6 @@
 import { AutoMap } from '@automapper/classes';
-import RunnerOS from 'src/models/runner-provider.enum';
-import RunnerStatus from 'src/models/runner-status.enum';
+import RunnerOS from 'src/data/models/runner-provider.enum';
+import RunnerStatus from 'src/data/models/runner-status.enum';
 import {
   Entity,
   ObjectIdColumn,

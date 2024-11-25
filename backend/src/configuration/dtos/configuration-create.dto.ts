@@ -1,18 +1,11 @@
 import { AutoMap } from '@automapper/classes';
-import {
-  IsInt,
-  ValidateNested,
-  Min,
-  IsDateString,
-  IsOptional,
-} from 'class-validator';
+import { IsInt, ValidateNested, Min } from 'class-validator';
 import { Type } from 'class-transformer';
-import { AWSEnvironmentConfigurationDto } from './environment.dto';
 import { InstanceConfigurationDto } from './instance-configuration.dto';
 import { AWSEC2ConfigurationDto } from './aws-ec2-configuration.dto';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class ConfigurationDto {
+export class ConfigurationCreateDto {
   @ApiProperty({
     type: Number,
     minimum: 0,
@@ -39,33 +32,4 @@ export class ConfigurationDto {
   @ValidateNested()
   @Type(() => AWSEC2ConfigurationDto)
   awsec2Configuration: AWSEC2ConfigurationDto;
-
-  @ApiProperty({
-    type: () => AWSEnvironmentConfigurationDto,
-    description: 'AWS environment configuration details',
-  })
-  @AutoMap(() => AWSEnvironmentConfigurationDto)
-  @ValidateNested()
-  @Type(() => AWSEnvironmentConfigurationDto)
-  awsEnvironmentConfiguration: AWSEnvironmentConfigurationDto;
-
-  @ApiProperty({
-    type: String,
-    format: 'date-time',
-    required: false,
-  })
-  @AutoMap()
-  @IsOptional()
-  @IsDateString()
-  created_at?: string;
-
-  @ApiProperty({
-    type: String,
-    format: 'date-time',
-    required: false,
-  })
-  @AutoMap()
-  @IsOptional()
-  @IsDateString()
-  updated_at?: string;
 }

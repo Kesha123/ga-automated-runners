@@ -1,37 +1,36 @@
 import { AutoMap } from '@automapper/classes';
-import { ObjectId, ObjectIdColumn, Column, CreateDateColumn } from 'typeorm';
+import {
+  ObjectId,
+  ObjectIdColumn,
+  Column,
+  CreateDateColumn,
+  Entity,
+  Index,
+} from 'typeorm';
+import { Configuration } from '../models/configuration.model';
 
-export class Congiguration {
-  @ObjectIdColumn()
-  _id: ObjectId;
-
+export class AWSEC2Configuration {
   @AutoMap()
   @Column()
   minNumberRunnerCount: number;
 
-  @AutoMap(() => InstanceConfiguration)
+  @AutoMap()
   @Column()
-  instanceConfiguration: InstanceConfiguration;
+  region: string;
+}
 
-  @AutoMap(() => AWSEC2Configuration)
+export class AWSEnvironmentConfiguration {
+  @AutoMap()
   @Column()
-  awsec2Configuration: AWSEC2Configuration;
-
-  @AutoMap(() => VagrantConfiuration)
-  @Column()
-  vagrantConfiguration: VagrantConfiuration;
-
-  @AutoMap(() => DockerConfiguration)
-  @Column()
-  dockerConfiguration: DockerConfiguration;
+  iamRoleARN: string;
 
   @AutoMap()
-  @CreateDateColumn()
-  created_at: string;
+  @Column()
+  iamPolicyARN: string;
 
   @AutoMap()
-  @CreateDateColumn()
-  updated_at: string;
+  @Column()
+  VPC: string;
 }
 
 export class InstanceConfiguration {
@@ -52,24 +51,36 @@ export class InstanceConfiguration {
   maxRAM: number;
 }
 
-export class AWSEC2Configuration {
+@Entity('configuration')
+@Index(['singleton'], { unique: true })
+export class ConfigurationEntity implements Configuration {
+  @ObjectIdColumn()
+  _id: ObjectId;
+
+  @Column()
+  singleton: string = 'singleton';
+
   @AutoMap()
   @Column()
   minNumberRunnerCount: number;
 
-  @AutoMap()
+  @AutoMap(() => InstanceConfiguration)
   @Column()
-  region: string;
-}
+  instanceConfiguration: InstanceConfiguration;
 
-export class VagrantConfiuration {
-  @AutoMap()
+  @AutoMap(() => AWSEC2Configuration)
   @Column()
-  nodePool: string[]; // Array of IP addresses
-}
+  awsec2Configuration: AWSEC2Configuration;
 
-export class DockerConfiguration {
-  @AutoMap()
+  @AutoMap(() => AWSEnvironmentConfiguration)
   @Column()
-  nodePool: string[]; // Array of IP addresses
+  awsEnvironmentConfiguration: AWSEnvironmentConfiguration;
+
+  @AutoMap()
+  @CreateDateColumn()
+  created_at: string;
+
+  @AutoMap()
+  @CreateDateColumn()
+  updated_at: string;
 }

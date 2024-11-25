@@ -4,19 +4,17 @@ import { ActionWebhookService } from './action-webhook.service';
 import { DataModule } from 'src/data/data.module';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
-import { ActionWebHookMapperProfile } from './mapper/mapper-profile';
+import { MapperProfile } from './mapper/mapper-profile';
 import { BullModule } from '@nestjs/bullmq';
 import { WorkflowJobConsumer } from './workflow-job.consumer';
+import { WorkflowjobModule } from 'src/workflowjob/workflowjob.module';
 
 @Module({
   controllers: [ActionWebhookController],
-  providers: [
-    ActionWebhookService,
-    ActionWebHookMapperProfile,
-    WorkflowJobConsumer,
-  ],
+  providers: [ActionWebhookService, MapperProfile, WorkflowJobConsumer],
   imports: [
     DataModule,
+    WorkflowjobModule,
     AutomapperModule.forRoot({
       strategyInitializer: classes(),
     }),

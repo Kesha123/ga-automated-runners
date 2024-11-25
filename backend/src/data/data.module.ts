@@ -4,6 +4,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { RunnerEntity } from './entities/runner.entity';
+import { ConfigurationEntity } from './entities/configuration.entity';
 
 @Module({
   imports: [
@@ -26,8 +27,7 @@ import { RunnerEntity } from './entities/runner.entity';
       useFactory: (configService: ConfigService) => ({
         type: 'mongodb',
         url: configService.get<string>('MONGO_URI'),
-        // entities: [__dirname + './entities/*.entity{.ts,.js}'],
-        entities: [RunnerEntity],
+        entities: [RunnerEntity, ConfigurationEntity],
       }),
       dataSourceFactory: async (options) => {
         const dataSource = await new DataSource(options).initialize();

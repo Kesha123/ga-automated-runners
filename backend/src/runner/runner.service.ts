@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import RunnerStatus from 'src/models/runner-status.enum';
-import { Runner } from '../models/runner.model';
+import RunnerStatus from 'src/data/models/runner-status.enum';
+import { Runner } from '../data/models/runner.model';
 
 @Injectable()
 export class RunnerService {

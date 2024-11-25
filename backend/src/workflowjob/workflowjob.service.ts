@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { RunnerService } from '../runner/runner.service';
-import Action from '../models/workflow-job-status.enum';
-import WorkflowJob from 'src/models/workflow-job.model';
+import Action from '../data/models/workflow-job-status.enum';
+import WorkflowJob from 'src/data/models/workflow-job.model';
 
 @Injectable()
 export class WorkflowjobService {

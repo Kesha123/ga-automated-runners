@@ -5,13 +5,14 @@ import { RepositoryDto } from './repository.dto';
 import { SenderDto } from './sender.dto';
 import { WorkflowJobDto } from './workflow-job.dto';
 import { AutoMap } from '@automapper/classes';
-import { WorkflowJobPayload } from 'src/models/workflow-job-payload.model';
+import { WorkflowJobPayload } from 'src/data/models/workflow-job-payload.model';
+import Action from '../../data/models/workflow-job-status.enum';
 
 export class WorkflowJobPayloadDto implements WorkflowJobPayload {
   @AutoMap()
   @IsString()
   @Transform(({ value }) => value.trim())
-  action: string;
+  action: Action;
 
   @AutoMap()
   @ValidateNested()

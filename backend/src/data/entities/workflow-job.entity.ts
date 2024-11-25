@@ -1,6 +1,6 @@
-import Step from '../../models/step.model';
-import WorkflowJobConclusion from '../../models/workflow-job-conclusion.enum';
-import WorkflowJobStatus from '../../models/workflow-job-status.enum';
+import Step from '../models/step.model';
+import WorkflowJobConclusion from '../models/workflow-job-conclusion.enum';
+import WorkflowJobStatus from '../models/workflow-job-status.enum';
 import {
   Entity,
   ObjectIdColumn,

@@ -5,5 +5,6 @@ import { RunnerService } from './runner.service';
 @Module({
   controllers: [RunnerController],
   providers: [RunnerService],
+  exports: [RunnerService],
 })
 export class RunnerModule {}
