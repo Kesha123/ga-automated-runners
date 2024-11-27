@@ -7,7 +7,6 @@ import {
   IsOptional,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { AWSEnvironmentConfigurationDto } from './environment.dto';
 import { InstanceConfigurationDto } from './instance-configuration.dto';
 import { AWSEC2ConfigurationDto } from './aws-ec2-configuration.dto';
 import { ApiProperty } from '@nestjs/swagger';
@@ -39,15 +38,6 @@ export class ConfigurationDto {
   @ValidateNested()
   @Type(() => AWSEC2ConfigurationDto)
   awsec2Configuration: AWSEC2ConfigurationDto;
-
-  @ApiProperty({
-    type: () => AWSEnvironmentConfigurationDto,
-    description: 'AWS environment configuration details',
-  })
-  @AutoMap(() => AWSEnvironmentConfigurationDto)
-  @ValidateNested()
-  @Type(() => AWSEnvironmentConfigurationDto)
-  awsEnvironmentConfiguration: AWSEnvironmentConfigurationDto;
 
   @ApiProperty({
     type: String,

@@ -5,11 +5,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  Index,
 } from 'typeorm';
 import { Configuration } from '../models/configuration.model';
 
 export class AWSEC2Configuration {
+  @AutoMap()
+  @ObjectIdColumn()
+  _id: ObjectId;
+
   @AutoMap()
   @Column()
   minNumberRunnerCount: number;
@@ -52,13 +55,10 @@ export class InstanceConfiguration {
 }
 
 @Entity('configuration')
-@Index(['singleton'], { unique: true })
 export class ConfigurationEntity implements Configuration {
+  @AutoMap()
   @ObjectIdColumn()
-  _id: ObjectId;
-
-  @Column()
-  singleton: string = 'singleton';
+  _id: string;
 
   @AutoMap()
   @Column()
@@ -71,10 +71,6 @@ export class ConfigurationEntity implements Configuration {
   @AutoMap(() => AWSEC2Configuration)
   @Column()
   awsec2Configuration: AWSEC2Configuration;
-
-  @AutoMap(() => AWSEnvironmentConfiguration)
-  @Column()
-  awsEnvironmentConfiguration: AWSEnvironmentConfiguration;
 
   @AutoMap()
   @CreateDateColumn()

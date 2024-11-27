@@ -7,7 +7,7 @@ import {
   AWSEC2Configuration,
   ConfigurationEntity,
   InstanceConfiguration,
-} from 'src/data/entities/configuration.entity';
+} from '../../data/entities/configuration.entity';
 import { ConfigurationCreateDto } from '../dtos/configuration-create.dto';
 import { InstanceConfigurationDto } from '../dtos/instance-configuration.dto';
 import { AWSEC2ConfigurationDto } from '../dtos/aws-ec2-configuration.dto';

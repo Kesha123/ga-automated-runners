@@ -5,7 +5,6 @@ import { DataSource } from 'typeorm';
 import { ConfigurationEntity } from '../data/entities/configuration.entity';
 import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
-import { AWSEnvironmentConfiguration } from '../data/models/aws-environment-configuration.model';
 import { ConfigurationNotFoundError } from '../errors/configuration-not-fount.error';
 import { ConfigurationCreateDto } from './dtos/configuration-create.dto';
 import { ConfigurationAlreadyExistsError } from '../errors/configuration-already-exists.error';
@@ -19,12 +18,13 @@ export class ConfigurationService {
 
   /**
    * Gets configuration
+   * @throws {ConfigurationNotFoundError}
    * @returns {Promise<ConfigurationEntity>}
    */
-  async getConfiguration(): Promise<ConfigurationEntity> {
+  async getConfiguration(id: string): Promise<ConfigurationEntity> {
     return this.dataSource.transaction(async (manager) => {
       const configuration = await manager.findOne(ConfigurationEntity, {
-        where: { singleton: 'singleton' },
+        where: { _id: id },
       });
       if (!configuration) throw new ConfigurationNotFoundError();
       return configuration;
@@ -33,7 +33,8 @@ export class ConfigurationService {
 
   /**
    * Creates configuration
-   * @param {ConfigurationDto} configurationDto
+   * @param {ConfigurationCreateDto} configurationCreateDto
+   * @throws {ConfigurationAlreadyExistsError}
    * @returns {Promise<void>}
    */
   async createConfiguration(
@@ -54,11 +55,13 @@ export class ConfigurationService {
   /**
    * Updates configuration
    * @param {ConfigurationDto} configurationDto
+   * @throws {ConfigurationNotFoundError}
    * @returns {Promise<void>}
    */
   async updateConfiguration(configurationDto: ConfigurationDto): Promise<void> {
     await this.dataSource.transaction(async (manager) => {
       const [, count] = await manager.findAndCount(ConfigurationEntity);
+      console.log(count)
       if (count < 1) throw new ConfigurationNotFoundError();
       const configuration = await this.mapper.mapAsync(
         configurationDto,
@@ -70,29 +73,6 @@ export class ConfigurationService {
         { singleton: 'singleton' },
         configuration,
       );
-    });
-  }
-
-  /**
-   * Creates an AWS environment
-   * @param {EnvironmentDto} environmentDto
-   * @returns {Promise<void>}
-   */
-  async createEnvironment(): Promise<void> {
-    await this.dataSource.transaction(async (manager) => {
-      const [configurations, count] =
-        await manager.findAndCount(ConfigurationEntity);
-      if (count < 1) throw new ConfigurationNotFoundError();
-      // TODO: Create IAM role
-      // TODO: Create IAM Policy
-      // TODO: Create VPC
-      const configuration = configurations[0];
-      const awsEnvironment = new AWSEnvironmentConfiguration();
-      awsEnvironment.VPC = 'vpc';
-      awsEnvironment.iamPolicyARN = 'iam-policy';
-      awsEnvironment.iamRoleARN = 'iam-role';
-      configuration.awsEnvironmentConfiguration = awsEnvironment;
-      await manager.save(configuration);
     });
   }
 }

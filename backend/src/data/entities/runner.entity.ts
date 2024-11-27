@@ -1,6 +1,5 @@
 import { AutoMap } from '@automapper/classes';
-import RunnerOS from 'src/data/models/runner-provider.enum';
-import RunnerStatus from 'src/data/models/runner-status.enum';
+import RunnerStatus from '../models/runner-status.enum';
 import {
   Entity,
   ObjectIdColumn,
@@ -51,21 +50,6 @@ export class RunnerEntity {
   shutdown_at: Date;
 
   @AutoMap()
-  @Column({
-    type: 'enum',
-    enum: RunnerOS,
-  })
-  provider: RunnerOS;
-
-  @AutoMap()
   @Column({ nullable: true })
   urn: string;
-
-  @AutoMap()
-  @Column({ nullable: true })
-  docker_id: string;
-
-  @AutoMap()
-  @Column({ nullable: true })
-  vagrant_id: string;
 }

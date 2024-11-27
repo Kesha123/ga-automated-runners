@@ -4,6 +4,7 @@ import {
   Get,
   HttpException,
   HttpStatus,
+  Param,
   Post,
   Put,
 } from '@nestjs/common';
@@ -32,16 +33,17 @@ export class ConfigurationController {
     @InjectMapper() private readonly mapper: Mapper,
   ) {}
 
-  @Get()
+  @Get('/:id')
   @ApiOperation({ summary: 'Get configuration' })
   @ApiOkResponse({
     description: 'The configuration has been successfully retrieved.',
     type: ConfigurationDto,
   })
   @ApiNotFoundResponse({ description: 'Configuration not found.' })
-  async getConfiguration(): Promise<ConfigurationDto> {
+  async getConfiguration(@Param() id: string): Promise<ConfigurationDto> {
     try {
-      const configuration = await this.configurationService.getConfiguration();
+      const configuration =
+        await this.configurationService.getConfiguration(id);
       const configurationDto = await this.mapper.mapAsync(
         configuration,
         ConfigurationEntity,
@@ -108,19 +110,19 @@ export class ConfigurationController {
   async updateConfiguration(
     @Body() configurationDto: ConfigurationDto,
   ): Promise<void> {
-    return this.configurationService.updateConfiguration(configurationDto);
-  }
-
-  @Post('environment')
-  @ApiOperation({ summary: 'Create environment configuration' })
-  @ApiResponse({
-    status: 201,
-    description:
-      'The AWS environment configuration has been successfully created.',
-  })
-  @ApiResponse({ status: 404, description: 'Configuration does not exist.' })
-  @ApiResponse({ status: 400, description: 'Invalid parameters.' })
-  async createEnvironment(): Promise<void> {
-    return this.configurationService.createEnvironment();
+    try {
+      await this.configurationService.updateConfiguration(configurationDto);
+    } catch (error) {
+      if (error instanceof ConfigurationNotFoundError) {
+        throw new HttpException(
+          'Configuration not found',
+          HttpStatus.NOT_FOUND,
+        );
+      }
+      throw new HttpException(
+        'Internal server error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }
