@@ -19,15 +19,19 @@ export class ConfigurationService {
   /**
    * Gets configuration
    * @throws {ConfigurationNotFoundError}
-   * @returns {Promise<ConfigurationEntity>}
+   * @returns {Promise<ConfigurationDto>}
    */
-  async getConfiguration(id: string): Promise<ConfigurationEntity> {
+  async getConfiguration(id: string): Promise<ConfigurationDto> {
     return this.dataSource.transaction(async (manager) => {
       const configuration = await manager.findOne(ConfigurationEntity, {
         where: { _id: id },
       });
       if (!configuration) throw new ConfigurationNotFoundError();
-      return configuration;
+      return this.mapper.mapAsync(
+        configuration,
+        ConfigurationEntity,
+        ConfigurationDto,
+      );
     });
   }
 
@@ -61,7 +65,6 @@ export class ConfigurationService {
   async updateConfiguration(configurationDto: ConfigurationDto): Promise<void> {
     await this.dataSource.transaction(async (manager) => {
       const [, count] = await manager.findAndCount(ConfigurationEntity);
-      console.log(count)
       if (count < 1) throw new ConfigurationNotFoundError();
       const configuration = await this.mapper.mapAsync(
         configurationDto,

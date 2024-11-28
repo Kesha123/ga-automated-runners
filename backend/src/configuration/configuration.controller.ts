@@ -23,7 +23,6 @@ import { InjectMapper } from '@automapper/nestjs';
 import { ConfigurationNotFoundError } from '../errors/configuration-not-fount.error';
 import { ConfigurationCreateDto } from './dtos/configuration-create.dto';
 import { ConfigurationAlreadyExistsError } from '../errors/configuration-already-exists.error';
-import { ConfigurationEntity } from '../data/entities/configuration.entity';
 
 @ApiTags('configuration')
 @Controller('configuration')
@@ -44,13 +43,7 @@ export class ConfigurationController {
     try {
       const configuration =
         await this.configurationService.getConfiguration(id);
-      const configurationDto = await this.mapper.mapAsync(
-        configuration,
-        ConfigurationEntity,
-        ConfigurationDto,
-      );
-      console.log(configurationDto);
-      return configurationDto;
+      return configuration;
     } catch (error) {
       if (error instanceof ConfigurationNotFoundError) {
         throw new HttpException(
@@ -84,6 +77,7 @@ export class ConfigurationController {
       await this.configurationService.createConfiguration(
         configurationCreateDto,
       );
+      return;
     } catch (error) {
       if (error instanceof ConfigurationAlreadyExistsError) {
         throw new HttpException(
@@ -112,6 +106,7 @@ export class ConfigurationController {
   ): Promise<void> {
     try {
       await this.configurationService.updateConfiguration(configurationDto);
+      return;
     } catch (error) {
       if (error instanceof ConfigurationNotFoundError) {
         throw new HttpException(

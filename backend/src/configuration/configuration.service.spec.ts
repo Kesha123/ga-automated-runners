@@ -54,7 +54,7 @@ describe('ConfigurationService', () => {
 
     it('should return configuration', async () => {
       const result = await service.getConfiguration('valid-id');
-      expect(result).toBeInstanceOf(ConfigurationEntity);
+      expect(result).toBeInstanceOf(ConfigurationDto);
     });
 
     it('should throw ConfigurationNotFoundError', async () => {
@@ -86,15 +86,17 @@ describe('ConfigurationService', () => {
   });
 
   describe('updateConfiguration', () => {
-    const configurationDto = {minNumberRunnerCount: 4} as ConfigurationDto;
+    const configurationDto = { minNumberRunnerCount: 4 } as ConfigurationDto;
 
     it('should be defined', () => {
       expect(service.updateConfiguration).toBeDefined();
     });
 
     it('should update configuration', async () => {
-      const result = await service.getConfiguration('valid-id');
-      await expect(service.updateConfiguration(configurationDto)).resolves.toBeUndefined();
+      await service.getConfiguration('valid-id');
+      await expect(
+        service.updateConfiguration(configurationDto),
+      ).resolves.toBeUndefined();
     });
 
     it('should throw ConfigurationNotFoundError', async () => {
@@ -104,6 +106,4 @@ describe('ConfigurationService', () => {
       ).rejects.toThrow(ConfigurationNotFoundError);
     });
   });
-
 });
-
