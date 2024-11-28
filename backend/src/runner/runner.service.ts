@@ -1,71 +1,128 @@
-import { Injectable } from '@nestjs/common';
-import RunnerStatus from 'src/data/models/runner-status.enum';
+import { Injectable, NotImplementedException } from '@nestjs/common';
+import RunnerStatus from '../data/models/runner-status.enum';
 import { Runner } from '../data/models/runner.model';
+import { DataSource, In, Not } from 'typeorm';
+import { Mapper } from '@automapper/core';
+import { InjectMapper } from '@automapper/nestjs';
+import { RunnerEntity } from '../data/entities/runner.entity';
+import { ConfigurationEntity } from '../data/entities/configuration.entity';
+import { RunnerNotFoundError } from '../errors/runner-not-found.error';
+import { RunnerDto } from './dtos/runner.dto';
 
 @Injectable()
 export class RunnerService {
+  constructor(
+    private dataSource: DataSource,
+    @InjectMapper() private readonly mapper: Mapper,
+  ) {}
+
+  /**
+   * Returns the number of available runners based on the status and labels
+   * @param {RunnerStatus} status - The status of the runners
+   * @param {string[]} labels - The labels of the runners
+   * @returns {Promise<number>}
+   */
   async getAvailableRunners(
     status: RunnerStatus,
     labels: string[],
   ): Promise<number> {
-    // Logic to get the count of available runners based on status and labels
-    console.log(
-      `Fetching available runners with status: ${status} and labels: ${labels}`,
-    );
-    return 0; // Replace with actual logic
+    return await this.dataSource.transaction(async (manager) => {
+      const runners = await manager.find(Runner, {
+        where: { status: status, labels: In(labels) },
+      });
+      return runners.length;
+    });
   }
 
+  /**
+   * Servers as an interface to spin up runners in different environments
+   * @param {number} count
+   * @param {string[]} labels
+   */
   async spinUpRunner(count: number, labels: string[]): Promise<void> {
-    // Logic to spin up runners
-    console.log(`Spinning up ${count} runners with labels: ${labels}`);
+    if (labels.includes('aws-ec2')) {
+      for (let i = 0; i < count; i++) {
+        await this.spinUpAWSEC2(labels);
+      }
+    } else {
+      throw new NotImplementedException();
+    }
   }
 
+  /**
+   * Checks if the number of runners is not less than the minimum required,
+   * and enough to pickup workflow jobs
+   * @param {RunnerStatus} status
+   * @returns {boolean}
+   */
   async isProperNumberOfRunners(status: RunnerStatus): Promise<boolean> {
-    // Logic to check if the proper number of runners exist
-    console.log(`Checking proper number of runners with status: ${status}`);
-    return true; // Replace with actual logic
+    return await this.dataSource.transaction(async (manager) => {
+      const configuration = await manager.find(ConfigurationEntity);
+      const minimumRequired = configuration[0].minNumberRunnerCount;
+      const runners = await manager.find(RunnerEntity, {
+        where: { status: status, next_job_id: Not(null) },
+      });
+      return runners.length >= minimumRequired;
+    });
   }
 
+  /**
+   * Servers as an interface to shut down runners in different environments
+   * @param {count} count
+   * @param {string[]} labels
+   */
   async shutDownRunner(count: number, labels: string[]): Promise<void> {
-    // Logic to shut down runners
-    console.log(`Shutting down ${count} runners with labels: ${labels}`);
+    if (labels.includes('aws-ec2')) {
+      for (let i = 0; i < count; i++) {
+        await this.shutDownAWSEC2('urn');
+      }
+    } else {
+      throw new NotImplementedException();
+    }
   }
 
+  /**
+   * Create a new runner on AWS EC2
+   * @param {string[]} labels
+   */
   async spinUpAWSEC2(labels: string[]): Promise<void> {
     // Logic to spin up EC2 instances
     console.log(`Spinning up AWS EC2 instances with labels: ${labels}`);
   }
 
+  /**
+   * Shuts down an AWS EC2 instance
+   * @param {string} urn - The URN of the EC2 instance
+   */
   async shutDownAWSEC2(urn: string): Promise<void> {
     // Logic to shut down EC2 instances
     console.log(`Shutting down AWS EC2 instance with URN: ${urn}`);
   }
 
-  async spinUpVagrantVM(labels: string[]): Promise<void> {
-    // Logic to spin up Vagrant VMs
-    console.log(`Spinning up Vagrant VMs with labels: ${labels}`);
+  /**
+   * Returns all runners
+   * @returns {Promise<Runner[]>}
+   */
+  async getRunners(): Promise<RunnerDto[]> {
+    return await this.dataSource.transaction(async (manager) => {
+      const runners = await manager.find(RunnerEntity);
+      return this.mapper.mapArrayAsync(runners, RunnerEntity, RunnerDto);
+    });
   }
 
-  async shutDownVagrantVM(vagrant_id: string): Promise<void> {
-    // Logic to shut down Vagrant VMs
-    console.log(`Shutting down Vagrant VM with ID: ${vagrant_id}`);
-  }
-
-  async spinUpDocker(labels: string[]): Promise<void> {
-    // Logic to spin up Docker containers
-    console.log(`Spinning up Docker containers with labels: ${labels}`);
-  }
-
-  async shutDownDocker(docker_id: string): Promise<void> {
-    // Logic to shut down Docker containers
-    console.log(`Shutting down Docker container with ID: ${docker_id}`);
-  }
-
-  async getRunner(id?: string, args?: Runner): Promise<Runner[]> {
-    // Logic to get runners based on id or other arguments
-    console.log(
-      `Fetching runners with id: ${id} and args: ${JSON.stringify(args)}`,
-    );
-    return []; // Replace with actual logic
+  /**
+   * Returns a runner based on the ID
+   * @param {string} id - The ID of the runner
+   * @returns {Promise<Runner>}
+   * @throws {RunnerNotFoundError}
+   */
+  async getRunner(id: string): Promise<RunnerDto> {
+    return await this.dataSource.transaction(async (manager) => {
+      const runner = await manager.findOne(RunnerEntity, {
+        where: { _id: id },
+      });
+      if (!runner) throw new RunnerNotFoundError();
+      return this.mapper.mapAsync(runner, RunnerEntity, RunnerDto);
+    });
   }
 }

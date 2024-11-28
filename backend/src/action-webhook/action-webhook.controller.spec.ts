@@ -36,14 +36,19 @@ describe('ActionWebhookController', () => {
 
   it('should call queueWorkflowJobAction with correct parameters', async () => {
     const workflowJobPayloadDto = new WorkflowJobPayloadDto();
-    const queueWorkflowJobActionSpy = jest.spyOn(service, 'queueWorkflowJobAction');
+    const queueWorkflowJobActionSpy = jest.spyOn(
+      service,
+      'queueWorkflowJobAction',
+    );
 
     await request(app.getHttpServer())
       .post('/action-webhook')
       .send(workflowJobPayloadDto)
       .expect(201);
 
-    expect(queueWorkflowJobActionSpy).toHaveBeenCalledWith(workflowJobPayloadDto);
+    expect(queueWorkflowJobActionSpy).toHaveBeenCalledWith(
+      workflowJobPayloadDto,
+    );
   });
 
   afterAll(async () => {

@@ -3,7 +3,6 @@ import RunnerStatus from '../models/runner-status.enum';
 import {
   Entity,
   ObjectIdColumn,
-  ObjectId,
   Column,
   CreateDateColumn,
   UpdateDateColumn,
@@ -13,7 +12,7 @@ import {
 export class RunnerEntity {
   @AutoMap()
   @ObjectIdColumn()
-  _id: ObjectId;
+  _id: string;
 
   @AutoMap()
   id: number;

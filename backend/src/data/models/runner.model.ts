@@ -3,6 +3,12 @@ import RunnerStatus from './runner-status.enum';
 
 export class Runner {
   @AutoMap()
+  _id: string;
+
+  @AutoMap()
+  id: number;
+
+  @AutoMap()
   status: RunnerStatus;
 
   @AutoMap()
