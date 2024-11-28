@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
-import { WorkflowJobPayload } from 'src/data/models/workflow-job-payload.model';
+import { WorkflowJobPayload } from '../data/models/workflow-job-payload.model';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { WorkflowJobPayloadDto } from './dtos/workflow-job-payload.dto';

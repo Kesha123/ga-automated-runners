@@ -1,7 +1,7 @@
 import { IsString, IsEnum, IsNumber, IsOptional } from 'class-validator';
 import { Transform } from 'class-transformer';
-import WorkflowJobConclusion from 'src/data/models/workflow-job-conclusion.enum';
-import WorkflowJobStatus from 'src/data/models/workflow-job-status.enum';
+import WorkflowJobConclusion from '../../data/models/workflow-job-conclusion.enum';
+import WorkflowJobStatus from '../../data/models/workflow-job-status.enum';
 import { AutoMap } from '@automapper/classes';
 
 export class StepDto {
