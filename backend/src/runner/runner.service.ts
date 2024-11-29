@@ -8,6 +8,8 @@ import { RunnerEntity } from '../data/entities/runner.entity';
 import { ConfigurationEntity } from '../data/entities/configuration.entity';
 import { RunnerNotFoundError } from '../errors/runner-not-found.error';
 import { RunnerDto } from './dtos/runner.dto';
+import { ConfigurationNotFoundError } from '../errors/configuration-not-fount.error';
+import { IntegrityViolationError } from '../errors/integrity-violation.error';
 
 @Injectable()
 export class RunnerService {
@@ -38,6 +40,7 @@ export class RunnerService {
    * Servers as an interface to spin up runners in different environments
    * @param {number} count
    * @param {string[]} labels
+   * @throws {NotImplementedException}
    */
   async spinUpRunner(count: number, labels: string[]): Promise<void> {
     if (labels.includes('aws-ec2')) {
@@ -54,11 +57,15 @@ export class RunnerService {
    * and enough to pickup workflow jobs
    * @param {RunnerStatus} status
    * @returns {boolean}
+   * @throws {ConfigurationNotFoundError}
+   * @throws {IntegrityViolationError}
    */
   async isProperNumberOfRunners(status: RunnerStatus): Promise<boolean> {
     return await this.dataSource.transaction(async (manager) => {
       const configuration = await manager.find(ConfigurationEntity);
+      if (!configuration) throw new ConfigurationNotFoundError();
       const minimumRequired = configuration[0].minNumberRunnerCount;
+      if (minimumRequired <= 0) throw new IntegrityViolationError();
       const runners = await manager.find(RunnerEntity, {
         where: { status: status, next_job_id: Not(null) },
       });
@@ -70,6 +77,7 @@ export class RunnerService {
    * Servers as an interface to shut down runners in different environments
    * @param {count} count
    * @param {string[]} labels
+   * @throws {NotImplementedException}
    */
   async shutDownRunner(count: number, labels: string[]): Promise<void> {
     if (labels.includes('aws-ec2')) {
