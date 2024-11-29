@@ -2,8 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { RunnerController } from './runner.controller';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { RunnerService } from './runner.service';
-import { RunnerNotFoundError } from '../errors/runner-not-found.error';
-import { Runner } from '../data/models/runner.model';
 import { RunnerDto } from './dtos/runner.dto';
 
 describe('RunnerController', () => {
@@ -38,7 +36,9 @@ describe('RunnerController', () => {
     it('should throw a 404 error if runner not found', async () => {
       jest
         .spyOn(runnerService, 'getRunner')
-        .mockRejectedValue(new HttpException('Not found', HttpStatus.NOT_FOUND));
+        .mockRejectedValue(
+          new HttpException('Not found', HttpStatus.NOT_FOUND),
+        );
       try {
         await controller.getRunnerById('1');
       } catch (error) {
@@ -50,7 +50,12 @@ describe('RunnerController', () => {
     it('should throw a 500 error for other errors', async () => {
       jest
         .spyOn(runnerService, 'getRunner')
-        .mockRejectedValue(new HttpException('Unexpected error', HttpStatus.INTERNAL_SERVER_ERROR));
+        .mockRejectedValue(
+          new HttpException(
+            'Unexpected error',
+            HttpStatus.INTERNAL_SERVER_ERROR,
+          ),
+        );
       try {
         await controller.getRunnerById('1');
       } catch (error) {
@@ -68,7 +73,14 @@ describe('RunnerController', () => {
     });
 
     it('should throw a 500 error if there is an unexpected error', async () => {
-      jest.spyOn(runnerService, 'getRunners').mockRejectedValue(new HttpException('Unexpected error', HttpStatus.INTERNAL_SERVER_ERROR));
+      jest
+        .spyOn(runnerService, 'getRunners')
+        .mockRejectedValue(
+          new HttpException(
+            'Unexpected error',
+            HttpStatus.INTERNAL_SERVER_ERROR,
+          ),
+        );
       try {
         await controller.getAllRunners();
       } catch (error) {

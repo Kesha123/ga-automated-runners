@@ -1,6 +1,12 @@
 import { AutoMap } from '@automapper/classes';
 import RunnerStatus from '../../data/models/runner-status.enum';
-import { IsEnum, IsString, IsNumber, IsOptional, IsDateString } from 'class-validator';
+import {
+  IsEnum,
+  IsString,
+  IsNumber,
+  IsOptional,
+  IsDateString,
+} from 'class-validator';
 import { Transform } from 'class-transformer';
 
 export class RunnerDto {
