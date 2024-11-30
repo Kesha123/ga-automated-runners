@@ -93,10 +93,7 @@ export class RunnerService {
    * Create a new runner on AWS EC2
    * @param {string[]} labels
    */
-  async spinUpAWSEC2(labels: string[]): Promise<void> {
-    // Logic to spin up EC2 instances
-    console.log(`Spinning up AWS EC2 instances with labels: ${labels}`);
-  }
+  async spinUpAWSEC2(labels: string[]): Promise<void> {}
 
   /**
    * Shuts down an AWS EC2 instance

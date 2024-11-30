@@ -102,10 +102,12 @@ export class ConfigurationController {
   @ApiResponse({ status: 404, description: 'Configuration does not exist.' })
   @ApiResponse({ status: 400, description: 'Invalid parameters.' })
   async updateConfiguration(
-    @Body() configurationDto: ConfigurationDto,
+    @Body() configurationCreateDto: ConfigurationCreateDto,
   ): Promise<void> {
     try {
-      await this.configurationService.updateConfiguration(configurationDto);
+      await this.configurationService.updateConfiguration(
+        configurationCreateDto,
+      );
       return;
     } catch (error) {
       if (error instanceof ConfigurationNotFoundError) {

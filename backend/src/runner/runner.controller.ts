@@ -7,7 +7,6 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { RunnerService } from './runner.service';
-import { Runner } from '../data/models/runner.model';
 import { RunnerNotFoundError } from '../errors/runner-not-found.error';
 import { RunnerDto } from './dtos/runner.dto';
 
@@ -21,7 +20,7 @@ export class RunnerController {
   @ApiResponse({
     status: 200,
     description: 'Return all runners',
-    type: [Runner],
+    type: [RunnerDto],
   })
   async getAllRunners(): Promise<RunnerDto[]> {
     return this.runnerService.getRunners();
@@ -32,7 +31,7 @@ export class RunnerController {
   @ApiResponse({
     status: 200,
     description: 'Return runner by ID',
-    type: Runner,
+    type: RunnerDto,
   })
   @ApiResponse({ status: 404, description: 'Runner not found' })
   @ApiResponse({
