@@ -1,6 +1,6 @@
 import { AutoMap } from '@automapper/classes';
 
-class Sender {
+export class Sender {
   @AutoMap()
   login: string;
 
@@ -13,5 +13,3 @@ class Sender {
   @AutoMap()
   html_url: string;
 }
-
-export default Sender;

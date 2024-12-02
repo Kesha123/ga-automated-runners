@@ -1,20 +1,18 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { WorkflowjobService } from './workflowjob.service';
 import { DataSource } from 'typeorm';
-import { Mapper } from '@automapper/core';
-import WorkflowJob from '../data/models/workflow-job.model';
 import { WorkflowJobActionUnknownError } from '../errors/workflow-job-action-unknown.error';
 import { RunnerService } from '../runner/runner.service';
 import { MapperProfile } from './mapper/mapper-profile';
 import { classes } from '@automapper/classes';
 import { AutomapperModule } from '@automapper/nestjs';
 import Action from '../data/models/workflow-job-status.enum';
+import { WorkflowJob } from '../data/models/workflow-job.model';
 
 describe('WorkflowjobService', () => {
   let service: WorkflowjobService;
   let runnerService: RunnerService;
   let dataSource: DataSource;
-  let mapper: Mapper;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -40,6 +38,7 @@ describe('WorkflowjobService', () => {
     service = module.get<WorkflowjobService>(WorkflowjobService);
     runnerService = module.get<RunnerService>(RunnerService);
     dataSource = module.get<DataSource>(DataSource);
+    console.log(runnerService, dataSource);
   });
 
   describe('handleJob', () => {

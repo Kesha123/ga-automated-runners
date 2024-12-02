@@ -7,9 +7,10 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Runner } from '../models/runner.model';
 
 @Entity('github_runner')
-export class RunnerEntity {
+export class RunnerEntity implements Runner {
   @AutoMap()
   @ObjectIdColumn()
   _id: string;
@@ -25,7 +26,7 @@ export class RunnerEntity {
   status: RunnerStatus;
 
   @AutoMap()
-  @Column('array')
+  @Column()
   labels: string[];
 
   @AutoMap()
@@ -38,11 +39,11 @@ export class RunnerEntity {
 
   @AutoMap()
   @CreateDateColumn()
-  createdAt: Date;
+  created_at: Date;
 
   @AutoMap()
   @UpdateDateColumn()
-  updatedAt: Date;
+  updated_at: Date;
 
   @AutoMap()
   @Column({ nullable: true })

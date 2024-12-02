@@ -1,9 +1,9 @@
-import Step from './step.model';
+import { Step } from './step.model';
 import WorkflowJobConclusion from './workflow-job-conclusion.enum';
 import WorkflowJobStatus from './workflow-job-status.enum';
 import { AutoMap } from '@automapper/classes';
 
-class WorkflowJob {
+export class WorkflowJob {
   @AutoMap()
   id: number;
 
@@ -61,5 +61,3 @@ class WorkflowJob {
   @AutoMap()
   runner_group_name: string | null;
 }
-
-export default WorkflowJob;

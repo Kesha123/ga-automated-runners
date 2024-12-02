@@ -4,96 +4,41 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Configuration } from '../models/configuration.model';
-
-export class AWSEC2Configuration {
-  @AutoMap()
-  @Column()
-  minNumberRunnerCount: number;
-
-  @AutoMap()
-  @Column()
-  region: string;
-}
-
-export class AWSEnvironmentConfiguration {
-  @AutoMap()
-  @Column()
-  iamRoleARN: string;
-
-  @AutoMap()
-  @Column()
-  iamPolicyARN: string;
-
-  @AutoMap()
-  @Column()
-  VPC: string;
-}
-
-export class InstanceConfiguration {
-  @AutoMap()
-  @Column()
-  minVCPU: number;
-
-  @AutoMap()
-  @Column()
-  maxVCPU: number;
-
-  @AutoMap()
-  @Column()
-  minRAM: number;
-
-  @AutoMap()
-  @Column()
-  maxRAM: number;
-}
-
-class AWSEnvironment {
-  @AutoMap()
-  @Column()
-  keyPairName: string;
-
-  @AutoMap()
-  @Column()
-  securityGroupId: string;
-
-  @AutoMap()
-  @Column()
-  imageId: string;
-
-  @AutoMap()
-  @Column()
-  instanceType: string;
-}
+import { AWSEnvironmentEntity } from './aws-environment.entity';
+import { InstanceConfigurationEntity } from './instance-configuration.entity';
 
 @Entity('configuration')
 export class ConfigurationEntity implements Configuration {
   @AutoMap()
-  @ObjectIdColumn()
+  @ObjectIdColumn({
+    primary: true,
+  })
   _id: string;
 
   @AutoMap()
   @Column()
   minNumberRunnerCount: number;
 
-  @AutoMap(() => InstanceConfiguration)
-  @Column()
-  instanceConfiguration: InstanceConfiguration;
+  @AutoMap(() => InstanceConfigurationEntity)
+  @Column(() => InstanceConfigurationEntity)
+  instanceConfiguration: InstanceConfigurationEntity;
 
-  @AutoMap(() => AWSEC2Configuration)
-  @Column()
-  awsec2Configuration: AWSEC2Configuration;
+  @AutoMap(() => AWSEnvironmentEntity)
+  @Column({ nullable: true })
+  awsEnvironment: AWSEnvironmentEntity | null;
 
-  @AutoMap(() => AWSEnvironment)
+  @AutoMap()
   @Column()
-  awsEnvironment: AWSEnvironment;
+  githubRepo: string;
 
   @AutoMap()
   @CreateDateColumn()
   created_at: string;
 
   @AutoMap()
-  @CreateDateColumn()
+  @UpdateDateColumn()
   updated_at: string;
 }

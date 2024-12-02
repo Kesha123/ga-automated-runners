@@ -1,6 +1,6 @@
 import { AutoMap } from '@automapper/classes';
 
-class Repository {
+export class Repository {
   @AutoMap()
   id: number;
 
@@ -19,5 +19,3 @@ class Repository {
   @AutoMap()
   description: string;
 }
-
-export default Repository;

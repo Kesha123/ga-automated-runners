@@ -3,14 +3,14 @@ import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
 import { Injectable } from '@nestjs/common';
 import { Configuration } from '../../data/models/configuration.model';
 import { ConfigurationDto } from '../dtos/configuration.dto';
-import {
-  AWSEC2Configuration,
-  ConfigurationEntity,
-  InstanceConfiguration,
-} from '../../data/entities/configuration.entity';
 import { ConfigurationCreateDto } from '../dtos/configuration-create.dto';
 import { InstanceConfigurationDto } from '../dtos/instance-configuration.dto';
-import { AWSEC2ConfigurationDto } from '../dtos/aws-ec2-configuration.dto';
+import { ConfigurationEntity } from '../../data/entities/configuration.entity';
+import { InstanceConfiguration } from '../../data/models/instance-configuration.model';
+import { InstanceConfigurationEntity } from '../../data/entities/instance-configuration.entity';
+import { AWSEnvironment } from '../../data/models/aws-environment.model';
+import { AWSEnvironmentConfigurationDto } from '../dtos/environment.dto';
+import { AWSEnvironmentDto } from '../dtos/aws-environment.dto';
 
 @Injectable()
 export class MapperProfile extends AutomapperProfile {
@@ -24,20 +24,27 @@ export class MapperProfile extends AutomapperProfile {
       createMap(mapper, Configuration, ConfigurationDto);
       createMap(mapper, ConfigurationEntity, ConfigurationDto);
       createMap(mapper, InstanceConfiguration, InstanceConfigurationDto);
-      createMap(mapper, AWSEC2Configuration, AWSEC2ConfigurationDto);
+      createMap(mapper, AWSEnvironment, AWSEnvironmentConfigurationDto);
+      createMap(mapper, AWSEnvironment, AWSEnvironmentDto);
 
       // Mapper: DTO -> Model
       createMap(mapper, ConfigurationDto, Configuration);
       createMap(mapper, ConfigurationDto, ConfigurationEntity);
       createMap(mapper, ConfigurationCreateDto, ConfigurationEntity);
+      createMap(mapper, ConfigurationCreateDto, Configuration);
       createMap(mapper, InstanceConfigurationDto, InstanceConfiguration);
-      createMap(mapper, AWSEC2ConfigurationDto, AWSEC2Configuration);
 
       // Mapper: Model -> Entity
       createMap(mapper, Configuration, ConfigurationEntity);
 
       // Mapper: Entity -> Model
       createMap(mapper, ConfigurationEntity, Configuration);
+
+      // Mapper: Dto -> Entity
+      createMap(mapper, InstanceConfigurationDto, InstanceConfigurationEntity);
+
+      // Mapper: Entity -> Dto
+      createMap(mapper, InstanceConfigurationEntity, InstanceConfigurationDto);
     };
   }
 }

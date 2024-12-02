@@ -10,6 +10,14 @@ export class AWSEnvironmentDto {
   @AutoMap()
   @IsString()
   @Transform(({ value }) => value.trim())
+  keyPairId: string;
+
+  @ApiProperty({
+    type: String,
+  })
+  @AutoMap()
+  @IsString()
+  @Transform(({ value }) => value.trim())
   keyPairName: string;
 
   @ApiProperty({

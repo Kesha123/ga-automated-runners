@@ -1,18 +1,18 @@
 import { createMap, Mapper, MappingProfile } from '@automapper/core';
 import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
 import { Injectable } from '@nestjs/common';
-import Organization from '../../data/models/organization.model';
 import { OrganizationDto } from '../dtos/organization.dto';
-import Repository from '../../data/models/repository.model';
 import { RepositoryDto } from '../dtos/repository.dto';
-import Sender from '../../data/models/sender.model';
 import { SenderDto } from '../dtos/sender.dto';
-import Step from '../../data/models/step.model';
 import { StepDto } from '../dtos/step.dto';
 import { WorkflowJobPayload } from '../../data/models/workflow-job-payload.model';
 import { WorkflowJobPayloadDto } from '../dtos/workflow-job-payload.dto';
-import WorkflowJob from '../../data/models/workflow-job.model';
 import { WorkflowJobDto } from '../dtos/workflow-job.dto';
+import { Organization } from '../../data/models/organization.model';
+import { Sender } from '../../data/models/sender.model';
+import { Step } from '../../data/models/step.model';
+import { WorkflowJob } from '../../data/models/workflow-job.model';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class MapperProfile extends AutomapperProfile {

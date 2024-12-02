@@ -21,13 +21,13 @@ export class Runner {
   next_job_id: number;
 
   @AutoMap()
-  created_at: string;
+  created_at: Date;
 
   @AutoMap()
-  updated_at: string;
+  updated_at: Date;
 
   @AutoMap()
-  shutdown_at: string;
+  shutdown_at: Date;
 
   @AutoMap()
   urn: string | null;

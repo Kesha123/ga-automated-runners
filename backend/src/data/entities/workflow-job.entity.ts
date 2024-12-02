@@ -1,4 +1,3 @@
-import Step from '../models/step.model';
 import WorkflowJobConclusion from '../models/workflow-job-conclusion.enum';
 import WorkflowJobStatus from '../models/workflow-job-status.enum';
 import {
@@ -11,10 +10,12 @@ import {
 } from 'typeorm';
 import { RunnerEntity } from './runner.entity';
 import { AutoMap } from '@automapper/classes';
+import { WorkflowJob } from '../models/workflow-job.model';
+import { Step } from '../models/step.model';
 
 @Entity('workflow_jobs')
 @Index('id_index', ['id'], { unique: true })
-class WorkflowJobEntity {
+class WorkflowJobEntity implements WorkflowJob {
   @AutoMap()
   @ObjectIdColumn()
   _id: ObjectId;
@@ -52,19 +53,28 @@ class WorkflowJobEntity {
   html_url: string;
 
   @AutoMap()
-  @Column()
+  @Column({
+    enum: WorkflowJobStatus,
+  })
   status: WorkflowJobStatus;
 
   @AutoMap()
-  @Column()
+  @Column({
+    enum: WorkflowJobConclusion,
+    nullable: true,
+  })
   conclusion: WorkflowJobConclusion | null;
 
   @AutoMap()
-  @Column()
+  @Column({
+    nullable: true,
+  })
   started_at: string | null;
 
   @AutoMap()
-  @Column()
+  @Column({
+    nullable: true,
+  })
   completed_at: string | null;
 
   @AutoMap()
@@ -80,19 +90,27 @@ class WorkflowJobEntity {
   labels: string[];
 
   @AutoMap()
-  @Column()
+  @Column({
+    nullable: true,
+  })
   runner_id: number | null;
 
   @AutoMap()
-  @Column()
+  @Column({
+    nullable: true,
+  })
   runner_name: string | null;
 
   @AutoMap()
-  @Column()
+  @Column({
+    nullable: true,
+  })
   runner_group_id: number | null;
 
   @AutoMap()
-  @Column()
+  @Column({
+    nullable: true,
+  })
   runner_group_name: string | null;
 
   @AutoMap()

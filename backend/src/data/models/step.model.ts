@@ -2,7 +2,7 @@ import { AutoMap } from '@automapper/classes';
 import WorkflowJobConclusion from './workflow-job-conclusion.enum';
 import WorkflowJobStatus from './workflow-job-status.enum';
 
-class Step {
+export class Step {
   @AutoMap()
   name: string;
 
@@ -21,5 +21,3 @@ class Step {
   @AutoMap()
   completed_at: string | null;
 }
-
-export default Step;

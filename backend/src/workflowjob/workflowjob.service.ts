@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { RunnerService } from '../runner/runner.service';
 import Action from '../data/models/workflow-job-status.enum';
-import WorkflowJob from '../data/models/workflow-job.model';
 import { WorkflowJobDto } from './dtos/workflow-job.dto';
 import { DataSource, In } from 'typeorm';
 import { Mapper } from '@automapper/core';
@@ -12,6 +11,7 @@ import { RunnerEntity } from '../data/entities/runner.entity';
 import { IntegrityViolationError } from '../errors/integrity-violation.error';
 import RunnerStatus from '../data/models/runner-status.enum';
 import WorkflowJobEntity from '../data/entities/workflow-job.entity';
+import { WorkflowJob } from 'src/data/models/workflow-job.model';
 
 @Injectable()
 export class WorkflowjobService {

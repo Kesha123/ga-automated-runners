@@ -113,14 +113,59 @@ export class RunnerService {
       if (count < 1) throw new ConfigurationNotFoundError();
       const configuration = configurations[0];
       const bashScript = `
+        #!/bin/bash
+        RUNNER_VERSION="2.320.0"
+        ACCESS_TOKEN="${this.configService.get<string>('GITHUB_ACCESS_TOKEN')}"
+        # Ensure the script runs with sufficient privileges
+        if [ "$(id -u)" -ne 0 ]; then
+          echo "This script must be run as root or with sudo."
+          exit 1
+        fi
+        # Step 1: Create the runner directory
+        RUNNER_DIR="/home/ec2-user/actions-runner"
+        echo "Creating runner directory at $RUNNER_DIR..."
+        mkdir -p "$RUNNER_DIR"
+        chown "ec2-user:ec2-user" "$RUNNER_DIR"
+        # Step 2: Download GitHub Runner
+        RUNNER_TAR="actions-runner-linux-x64-$RUNNER_VERSION.tar.gz"
+        RUNNER_URL="https://github.com/actions/runner/releases/download/v$RUNNER_VERSION/$RUNNER_TAR"
+        echo "Downloading GitHub Runner from $RUNNER_URL..."
+        curl -L -o "$RUNNER_DIR/$RUNNER_TAR" "$RUNNER_URL"
+        # Step 3: Extract GitHub Runner
+        echo "Extracting GitHub Runner..."
+        tar -xzf "$RUNNER_DIR/$RUNNER_TAR" -C "$RUNNER_DIR"
+        # Step 4: Get Runner Token
+        echo "Fetching runner token from GitHub API..."
+        REG_TOKEN_RESPONSE=$(curl -s -X POST \
+          -H "Authorization: token ${this.configService.get<string>('GITHUB_ACCESS_TOKEN')}" \
+          -H "Accept: application/vnd.github+json" \
+          "https://api.github.com/${configuration.githubRepo}/actions/runners/registration-token")
 
+        REG_TOKEN=$(echo "$REG_TOKEN_RESPONSE" | jq -r '.token')
+        if [ -z "$REG_TOKEN" ]; then
+          echo "Failed to fetch the runner token."
+          exit 1
+        fi
+        # Step 5: Configure GitHub Runner
+        echo "Configuring GitHub Runner..."
+        sudo -u "ec2-user" bash -c "
+          cd $RUNNER_DIR
+          ./config.sh --url https://github.com/${configuration.githubRepo} --token $REG_TOKEN --name $(hostname) --work _work --unattended
+        "
+        # Step 6: Start GitHub Runner
+        echo "Installing and starting GitHub Runner service..."
+        sudo -u "ec2-user" bash -c "
+          cd $RUNNER_DIR
+          ./svc.sh install
+          ./svc.sh start
+        "
       `;
       const params: EC2.RunInstancesRequest = {
         ImageId: configuration.awsEnvironment.imageId,
         InstanceType: configuration.awsEnvironment.instanceType,
         MinCount: 1,
         MaxCount: 1,
-        KeyName: configuration.awsEnvironment.keyPairName,
+        KeyName: configuration.awsEnvironment.keyPairId,
         SecurityGroupIds: [configuration.awsEnvironment.securityGroupId],
         UserData: Buffer.from(bashScript).toString('base64'),
       };

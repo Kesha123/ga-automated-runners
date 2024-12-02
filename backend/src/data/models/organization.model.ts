@@ -1,6 +1,6 @@
 import { AutoMap } from '@automapper/classes';
 
-class Organization {
+export class Organization {
   @AutoMap()
   login: string;
 
@@ -16,5 +16,3 @@ class Organization {
   @AutoMap()
   description: string;
 }
-
-export default Organization;

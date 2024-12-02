@@ -6,6 +6,7 @@ import {
   HttpException,
   HttpStatus,
   Param,
+  Patch,
   Post,
   Put,
 } from '@nestjs/common';
@@ -26,6 +27,9 @@ import { ConfigurationCreateDto } from './dtos/configuration-create.dto';
 import { ConfigurationAlreadyExistsError } from '../errors/configuration-already-exists.error';
 import { AWSEnvironmentDto } from './dtos/aws-environment.dto';
 import { CreateAWSEnvironmentDto } from './dtos/create-aws-environment.dto';
+import { AWSEnvironmentAlreadyExistsError } from '../errors/aws-environment-already-exists.error';
+import { IntegrityViolationError } from '../errors/integrity-violation.error';
+import { AWSEnvironmentNotFoundError } from '../errors/aws-environment-not-found.error';
 
 @ApiTags('configuration')
 @Controller('configuration')
@@ -35,17 +39,16 @@ export class ConfigurationController {
     @InjectMapper() private readonly mapper: Mapper,
   ) {}
 
-  @Get('/:id')
+  @Get()
   @ApiOperation({ summary: 'Get configuration' })
   @ApiOkResponse({
     description: 'The configuration has been successfully retrieved.',
     type: ConfigurationDto,
   })
   @ApiNotFoundResponse({ description: 'Configuration not found.' })
-  async getConfiguration(@Param() id: string): Promise<ConfigurationDto> {
+  async getConfiguration(): Promise<ConfigurationDto> {
     try {
-      const configuration =
-        await this.configurationService.getConfiguration(id);
+      const configuration = await this.configurationService.getConfiguration();
       return configuration;
     } catch (error) {
       if (error instanceof ConfigurationNotFoundError) {
@@ -54,6 +57,7 @@ export class ConfigurationController {
           HttpStatus.NOT_FOUND,
         );
       }
+      console.log(error);
       throw new HttpException(
         'Internal server error',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -88,6 +92,7 @@ export class ConfigurationController {
           HttpStatus.CONFLICT,
         );
       }
+      console.log(error);
       throw new HttpException(
         'Internal server error',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -97,7 +102,7 @@ export class ConfigurationController {
 
   @Put()
   @ApiOperation({ summary: 'Update configuration' })
-  @ApiBody({ type: ConfigurationDto })
+  @ApiBody({ type: ConfigurationCreateDto })
   @ApiResponse({
     status: 200,
     description: 'The configuration has been successfully updated.',
@@ -119,6 +124,7 @@ export class ConfigurationController {
           HttpStatus.NOT_FOUND,
         );
       }
+      console.log(error);
       throw new HttpException(
         'Internal server error',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -126,7 +132,7 @@ export class ConfigurationController {
     }
   }
 
-  @Post('environment')
+  @Patch('environment')
   @ApiOperation({
     summary:
       'Create AWS environment configuration. Key pair, Security Group, and saves Image id.',
@@ -148,6 +154,12 @@ export class ConfigurationController {
       );
       return;
     } catch (error) {
+      if (error instanceof AWSEnvironmentAlreadyExistsError) {
+        throw new HttpException(
+          'Configuration already exists',
+          HttpStatus.CONFLICT,
+        );
+      }
       console.log(error);
       throw new HttpException(
         'Internal server error',
@@ -175,6 +187,7 @@ export class ConfigurationController {
           HttpStatus.NOT_FOUND,
         );
       }
+      console.error(error);
       throw new HttpException(
         'Internal server error',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -200,7 +213,18 @@ export class ConfigurationController {
           'Configuration not found',
           HttpStatus.NOT_FOUND,
         );
+      } else if (error instanceof IntegrityViolationError) {
+        throw new HttpException(
+          'Integrity violation error.',
+          HttpStatus.CONFLICT,
+        );
+      } else if (error instanceof AWSEnvironmentNotFoundError) {
+        throw new HttpException(
+          'AWS environment not found',
+          HttpStatus.NOT_FOUND,
+        );
       }
+      console.error(error);
       throw new HttpException(
         'Internal server error',
         HttpStatus.INTERNAL_SERVER_ERROR,

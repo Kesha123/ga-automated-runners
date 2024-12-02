@@ -1,8 +1,7 @@
 import { AutoMap } from '@automapper/classes';
-import { IsInt, ValidateNested, Min } from 'class-validator';
-import { Type } from 'class-transformer';
+import { IsInt, ValidateNested, Min, IsString } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
 import { InstanceConfigurationDto } from './instance-configuration.dto';
-import { AWSEC2ConfigurationDto } from './aws-ec2-configuration.dto';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class ConfigurationCreateDto {
@@ -25,11 +24,10 @@ export class ConfigurationCreateDto {
   instanceConfiguration: InstanceConfigurationDto;
 
   @ApiProperty({
-    type: () => AWSEC2ConfigurationDto,
-    description: 'AWS EC2 instance configuration details',
+    type: String,
   })
-  @AutoMap(() => AWSEC2ConfigurationDto)
-  @ValidateNested()
-  @Type(() => AWSEC2ConfigurationDto)
-  awsec2Configuration: AWSEC2ConfigurationDto;
+  @AutoMap()
+  @IsString()
+  @Transform(({ value }) => value.trim())
+  githubRepo: string;
 }

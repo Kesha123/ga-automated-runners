@@ -1,9 +1,9 @@
 import { createMap, Mapper, MappingProfile } from '@automapper/core';
 import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
 import { Injectable } from '@nestjs/common';
-import WorkflowJob from '../../data/models/workflow-job.model';
 import WorkflowJobEntity from '../../data/entities/workflow-job.entity';
 import { WorkflowJobDto } from '../dtos/workflow-job.dto';
+import { WorkflowJob } from 'src/data/models/workflow-job.model';
 
 @Injectable()
 export class MapperProfile extends AutomapperProfile {
