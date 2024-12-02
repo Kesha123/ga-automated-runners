@@ -1,6 +1,5 @@
 import { AutoMap } from '@automapper/classes';
 import {
-  ObjectId,
   ObjectIdColumn,
   Column,
   CreateDateColumn,
@@ -9,10 +8,6 @@ import {
 import { Configuration } from '../models/configuration.model';
 
 export class AWSEC2Configuration {
-  @AutoMap()
-  @ObjectIdColumn()
-  _id: ObjectId;
-
   @AutoMap()
   @Column()
   minNumberRunnerCount: number;
@@ -54,6 +49,24 @@ export class InstanceConfiguration {
   maxRAM: number;
 }
 
+class AWSEnvironment {
+  @AutoMap()
+  @Column()
+  keyPairName: string;
+
+  @AutoMap()
+  @Column()
+  securityGroupId: string;
+
+  @AutoMap()
+  @Column()
+  imageId: string;
+
+  @AutoMap()
+  @Column()
+  instanceType: string;
+}
+
 @Entity('configuration')
 export class ConfigurationEntity implements Configuration {
   @AutoMap()
@@ -71,6 +84,10 @@ export class ConfigurationEntity implements Configuration {
   @AutoMap(() => AWSEC2Configuration)
   @Column()
   awsec2Configuration: AWSEC2Configuration;
+
+  @AutoMap(() => AWSEnvironment)
+  @Column()
+  awsEnvironment: AWSEnvironment;
 
   @AutoMap()
   @CreateDateColumn()

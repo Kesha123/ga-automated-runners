@@ -5,6 +5,7 @@ import { DataModule } from '../data/data.module';
 import { MapperProfile } from './mapper/mapper-profile';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -12,8 +13,9 @@ import { classes } from '@automapper/classes';
     AutomapperModule.forRoot({
       strategyInitializer: classes(),
     }),
+    ConfigModule,
   ],
-  providers: [ConfigurationService, MapperProfile],
+  providers: [ConfigurationService, MapperProfile, ConfigService],
   controllers: [ConfigurationController],
 })
 export class ConfigurationModule {}
